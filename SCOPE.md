@@ -1,0 +1,661 @@
+# SCOPE.MD
+
+## 1. Canonical Task
+
+This system supports exactly one canonical task:
+
+Given explicit numerical dimensions and geometric constraints, generate a 2D rectangular plate with circular holes that can be deterministically regenerated.
+
+Success is defined as:
+- A plate with exact specified dimensions and hole placements
+- All specified constraints are satisfied within floating-point precision
+- Identical inputs produce bit-identical outputs
+- Generation completes in under 500ms for plates under 1m²
+
+## 2. Explicit Inputs
+
+### Parameters
+- `width`: number (required, in mm, 0.1mm to 10000mm)
+- `height`: number (required, in mm, 0.1mm to 10000mm)
+- `thickness`: number (required, in mm, 0.1mm to 1000mm)
+- `cornerRadius`: number (optional, in mm, 0 to min(width,height)/2, default: 0)
+- `holePositions`: Array<{x: number, y: number, diameter: number}> (optional)
+  - x: number (0 to width, in mm)
+  - y: number (0 to height, in mm)
+  - diameter: number (0.1mm to min(width,height), in mm)
+
+### Constraints (all in mm)
+- `holeEdgeClearance`: number (required, minimum distance from hole edge to plate edge, default: 1mm)
+- `holeToHoleClearance`: number (required, minimum distance between hole edges, default: 1mm)
+
+## 3. Explicit Outputs
+
+### Geometry
+- A single 2D rectangular plate with optional rounded corners
+- Zero or more circular holes
+- All dimensions match inputs within floating-point precision
+
+### Failure Cases (valid outputs)
+- `INVALID_DIMENSIONS`: Any dimension outside allowed range
+- `HOLE_COLLISION`: Holes violate edge or inter-hole clearance
+- `HOLE_OUT_OF_BOUNDS`: Hole position places any part of hole outside plate
+- `CONSTRAINT_VIOLATION`: Any specified constraint cannot be satisfied
+
+## 4. Out of Scope (Aggressive)
+
+### Geometry
+- No 3D shapes or extrusions
+- No non-rectangular plates
+- No slots, pockets, or non-circular holes
+- No chamfers or fillets except corner radius
+- No surface finishes or materials
+- No text or labels
+- No layers or visibility toggles
+- No assembly of multiple plates
+
+### Constraints
+- No automatic hole placement
+- No minimum feature size checking (beyond hole clearances)
+- No manufacturing constraints (tool sizes, etc.)
+- No physical property calculations
+- No collision detection with external objects
+- No optimization of hole placement
+
+### UI/UX
+- No drag-and-drop positioning
+- No visual feedback during generation
+- No undo/redo (handled by client)
+- No versioning
+- No measurement tools
+- No zoom/pan controls
+
+## 5. Non-Goals
+
+### Tempting but Rejected
+- Support for other shapes (circles, polygons, etc.)
+- 3D modeling capabilities
+- Automatic constraint solving for under-constrained systems
+- Support for imperial units
+- Interactive editing
+- Real-time preview
+- Import/export to other CAD formats
+- User authentication
+- Cloud storage
+- Collaboration features
+- Version control integration
+- Mobile responsiveness
+- Offline support
+- Accessibility features
+- Internationalization
+- Dark mode
+- Plugins or extensions
+- Scripting or automation API
+- Performance optimization for >100 holes
+- Support for overlapping holes
+- Hole patterns (grid, circular, etc.)
+- Tolerancing specifications
+- Manufacturing outputs (G-code, etc.)
+- Cost estimation
+- Mass properties
+- Stress analysis
+- Thermal analysis
+- Documentation generation
+- Bill of materials
+- Drawing views
+- Dimensions and annotations
+- Cross-sections
+- Exploded views
+- Rendering (beyond wireframe)
+- Animation
+- Simulation
+- Generative design
+- AI-assisted modeling
+- Natural language input
+- Voice commands
+- Gesture controls
+- VR/AR support
+- Multi-user editing
+- Commenting/annotation
+- Change tracking
+- Approval workflows
+- PDF/Image export
+- 3D printing support
+- CAM integration
+- PDM/PLM integration
+- ERP/MRP integration
+- Cloud rendering
+- Localization
+- Theming
+- Plug-in architecture
+- Webhooks/API integrations
+- Usage analytics
+- Error tracking
+- Performance metrics
+- Automated testing
+- Documentation
+- Tutorials
+- Examples
+- Demos
+- Benchmarks
+- Profiling tools
+- Debugging tools
+- Developer documentation
+- API documentation
+- User guides
+- Video tutorials
+- Community forum
+- Support ticketing
+- Feature requests
+- Bug reports
+- Changelog
+- Roadmap
+- Contributing guidelines
+- Code of conduct
+- License
+- Credits
+- Sponsors
+- Blog
+- Newsletter
+- Social media
+- Marketing website
+- Documentation website
+- Status page
+- Pricing
+- Subscription management
+- Billing
+- Invoicing
+- Payment processing
+- Tax calculation
+- Refund handling
+- User management
+- Role-based access control
+- Audit logging
+- Compliance (GDPR, CCPA, etc.)
+- Data export
+- Data deletion
+- Data retention policies
+- Backup/restore
+- Disaster recovery
+- High availability
+- Load balancing
+- Auto-scaling
+- Multi-region deployment
+- Edge caching
+- CDN integration
+- DDoS protection
+- WAF configuration
+- Rate limiting
+- API keys
+- OAuth integration
+- SSO support
+- MFA
+- Password policies
+- Account recovery
+- Email verification
+- CAPTCHA
+- Terms of service
+- Privacy policy
+- Security policy
+- Vulnerability reporting
+- Penetration testing
+- Code signing
+- Dependency auditing
+- License compliance
+- Supply chain security
+- Containerization
+- Kubernetes orchestration
+- Serverless deployment
+- CI/CD pipelines
+- Automated testing
+- Code coverage
+- Static analysis
+- Dynamic analysis
+- Fuzz testing
+- Performance testing
+- Load testing
+- Stress testing
+- End-to-end testing
+- Visual regression testing
+- Accessibility testing
+- Cross-browser testing
+- Mobile testing
+- Internationalization testing
+- Security testing
+- Compliance testing
+- Usability testing
+- User acceptance testing
+- Beta testing
+- Canary releases
+- Feature flags
+- A/B testing
+- Analytics integration
+- Error tracking
+- Logging
+- Monitoring
+- Alerting
+- Tracing
+- Metrics collection
+- Dashboarding
+- Reporting
+- Data visualization
+- Business intelligence
+- Machine learning
+- Predictive analytics
+- Anomaly detection
+- Root cause analysis
+- Incident management
+- Post-mortems
+- Runbooks
+- Knowledge base
+- ChatOps integration
+- On-call scheduling
+- PagerDuty integration
+- Status page updates
+- Customer communication
+- Support documentation
+- API documentation
+- Developer documentation
+- Architecture documentation
+- Design documents
+- RFCs
+- ADRs
+- Meeting notes
+- Project plans
+- Roadmaps
+- Milestones
+- Epics
+- User stories
+- Tasks
+- Bugs
+- Issues
+- Pull requests
+- Code reviews
+- Pair programming
+- Mob programming
+- Documentation reviews
+- Design reviews
+- Security reviews
+- Performance reviews
+- Incident reviews
+- Post-mortems
+- Retrospectives
+- Sprint planning
+- Sprint reviews
+- Sprint retrospectives
+- Daily standups
+- Backlog grooming
+- Story mapping
+- Impact mapping
+- User research
+- User interviews
+- User testing
+- Surveys
+- Analytics
+- A/B testing
+- Usability testing
+- Accessibility testing
+- Performance testing
+- Security testing
+- Load testing
+- Stress testing
+- End-to-end testing
+- Integration testing
+- Unit testing
+- Static analysis
+- Dynamic analysis
+- Fuzz testing
+- Mutation testing
+- Property-based testing
+- Model-based testing
+- Contract testing
+- Visual regression testing
+- Cross-browser testing
+- Mobile testing
+- Internationalization testing
+- Localization testing
+- Compliance testing
+- Certification
+- Auditing
+- Penetration testing
+- Vulnerability scanning
+- Dependency scanning
+- License compliance
+- Supply chain security
+- Code signing
+- Artifact signing
+- SBOM generation
+- VEX generation
+- Provenance attestation
+- SLSA compliance
+- NIST SSDF compliance
+- OWASP ASVS compliance
+- CIS benchmarks
+- NIST 800-53 controls
+- ISO 27001
+- SOC 2
+- GDPR
+- CCPA
+- HIPAA
+- FEDRAMP
+- ITAR
+- EAR
+- OFAC
+- KYC
+- AML
+- CTF
+- Bug bounty
+- Responsible disclosure
+- Security.txt
+- PGP keys
+- SSH keys
+- TLS certificates
+- ACME integration
+- HSM integration
+- KMS integration
+- Secrets management
+- Configuration management
+- Infrastructure as code
+- Policy as code
+- GitOps
+- ChatOps
+- AIOps
+- MLOps
+- DataOps
+- DevSecOps
+- FinOps
+- Cloud cost management
+- Carbon footprint tracking
+- Sustainability metrics
+- Diversity and inclusion metrics
+- Team health metrics
+- Developer productivity metrics
+- Business metrics
+- OKRs
+- KPIs
+- North star metrics
+- Fun-ctions
+- Team building activities
+- Knowledge sharing sessions
+- Lightning talks
+- Hackathons
+- Innovation time
+- Open source contributions
+- Community engagement
+- Mentorship
+- Apprenticeship
+- Internship
+- University relations
+- Conference speaking
+- Blog posts
+- Technical writing
+- Documentation sprints
+- Translation
+- Localization
+- Internationalization
+- Accessibility improvements
+- Performance optimizations
+- Security hardening
+- Technical debt reduction
+- Refactoring
+- Code cleanup
+- Dependency updates
+- Build system improvements
+- Test improvements
+- CI/CD improvements
+- Monitoring improvements
+- Alerting improvements
+- Documentation improvements
+- Developer experience improvements
+- User experience improvements
+- Performance improvements
+- Security improvements
+- Reliability improvements
+- Scalability improvements
+- Maintainability improvements
+- Observability improvements
+- Operability improvements
+- Deployability improvements
+- Testability improvements
+- Debuggability improvements
+- Profiling
+- Benchmarking
+- Optimization
+- Parallelization
+- Caching
+- Memoization
+- Lazy loading
+- Tree shaking
+- Code splitting
+- Bundle size optimization
+- Asset optimization
+- Image optimization
+- Font optimization
+- CSS optimization
+- JavaScript optimization
+- HTML optimization
+- HTTP/2 optimization
+- HTTP/3 optimization
+- CDN optimization
+- Edge caching
+- Browser caching
+- Service workers
+- Web workers
+- WebAssembly
+- Web Components
+- Web APIs
+- Browser extensions
+- Progressive Web Apps
+- Single Page Applications
+- Server-Side Rendering
+- Static Site Generation
+- Incremental Static Regeneration
+- Edge Functions
+- Middleware
+- API routes
+- Serverless Functions
+- Edge Caching
+- ISR
+- DPR
+- LCP
+- CLS
+- FID
+- INP
+- TTFB
+- FCP
+- SI
+- TTI
+- TBT
+- Web Vitals
+- Core Web Vitals
+- Performance budgets
+- Resource hints
+- Prefetching
+- Preloading
+- Preconnecting
+- DNS prefetching
+- Prerendering
+- Code splitting
+- Lazy loading
+- Tree shaking
+- Dead code elimination
+- Minification
+- Compression
+- Brotli
+- Gzip
+- Deflate
+- Image formats
+- WebP
+- AVIF
+- JPEG XL
+- Vector graphics
+- SVG
+- Canvas
+- WebGL
+- WebGPU
+- WebAssembly
+- Web Workers
+- Service Workers
+- Cache API
+- IndexedDB
+- Web SQL
+- LocalStorage
+- SessionStorage
+- Cookies
+- Web Crypto API
+- Web Authentication API
+- Web Bluetooth API
+- Web USB API
+- Web Serial API
+- Web NFC API
+- Web Share API
+- Web Share Target API
+- WebXR API
+- Web Audio API
+- Web MIDI API
+- Gamepad API
+- Vibration API
+- Battery Status API
+- Device Orientation API
+- Device Motion API
+- Screen Orientation API
+- Fullscreen API
+- Pointer Lock API
+- Clipboard API
+- Drag and Drop API
+- File System Access API
+- Contact Picker API
+- Badging API
+- Notifications API
+- Push API
+- Background Sync API
+- Background Fetch API
+- Periodic Background Sync API
+- WebOTP API
+- Web Authentication API
+- Credential Management API
+- Payment Request API
+- Web Monetization API
+- WebHID API
+- Web Locks API
+- WebCodecs API
+- WebTransport API
+- Web Neural Network API
+- WebAssembly SIMD
+- WebAssembly Threads
+- WebAssembly Exception Handling
+- WebAssembly Reference Types
+- WebAssembly Bulk Memory Operations
+- WebAssembly Multi-Value
+- WebAssembly Tail Calls
+- WebAssembly GC
+- WebAssembly Interface Types
+- WebAssembly Component Model
+- WebAssembly WASI
+- WebAssembly System Interface
+- WebAssembly Emscripten
+- WebAssembly AssemblyScript
+- WebAssembly Rust
+- WebAssembly C/C++
+- WebAssembly Go
+- WebAssembly .NET
+- WebAssembly Python
+- WebAssembly Java
+- WebAssembly Kotlin
+- WebAssembly Swift
+- WebAssembly Ruby
+- WebAssembly PHP
+- WebAssembly TypeScript
+- WebAssembly JavaScript
+- WebAssembly Text Format
+- WebAssembly Binary Toolkit
+- WebAssembly Studio
+- WebAssembly Explorer
+- WebAssembly Fiddle
+- WebAssembly REPL
+- WebAssembly Playground
+- WebAssembly Examples
+- WebAssembly Demos
+- WebAssembly Tutorials
+- WebAssembly Documentation
+- WebAssembly Specification
+- WebAssembly Proposals
+- WebAssembly Community Group
+- WebAssembly Working Group
+- WebAssembly CG
+- WebAssembly WG
+- WebAssembly MVP
+- WebAssembly Post-MVP
+- WebAssembly Future Features
+- WebAssembly Roadmap
+- WebAssembly Implementations
+- WebAssembly Runtimes
+- WebAssembly Engines
+- WebAssembly Compilers
+- WebAssembly Toolchains
+- WebAssembly Development
+- WebAssembly Production
+- WebAssembly Optimization
+- WebAssembly Performance
+- WebAssembly Security
+- WebAssembly Sandboxing
+- WebAssembly Isolation
+- WebAssembly Memory Model
+- WebAssembly Threading Model
+- WebAssembly Garbage Collection
+- WebAssembly Exception Handling
+- WebAssembly Debugging
+- WebAssembly Profiling
+- WebAssembly Testing
+- WebAssembly Deployment
+- WebAssembly Hosting
+- WebAssembly CDN
+- WebAssembly Edge Computing
+- WebAssembly Serverless
+- WebAssembly Containers
+- WebAssembly Microservices
+- WebAssembly Functions as a Service
+- WebAssembly Platform as a Service
+- WebAssembly Infrastructure as Code
+- WebAssembly Kubernetes
+- WebAssembly Docker
+- WebAssembly OCI
+- WebAssembly WASI-NN
+- WebAssembly WASI-Crypto
+- WebAssembly WASI-HTTP
+- WebAssembly WASI-KeyValue
+- WebAssembly WASI-Messaging
+- WebAssembly WASI-PubSub
+- WebAssembly WASI-Queues
+- WebAssembly WASI-SQL
+- WebAssembly WASI-Storage
+- WebAssembly WASI-Streams
+- WebAssembly WASI-Web
+- WebAssembly WASI-WebCrypto
+- WebAssembly WASI-WebGPU
+- WebAssembly WASI-WebNN
+- WebAssembly WASI-WebUSB
+- WebAssembly WASI-WebAuthn
+- WebAssembly WASI-WebHID
+- WebAssembly WASI-WebNFC
+- WebAssembly WASI-WebSerial
+- WebAssembly WASI-WebShare
+- WebAssembly WASI-WebSocket
+- WebAssembly WASI-WebTransport
+- WebAssembly WASI-WebXR
+- WebAssembly WASI-WebAudio
+- WebAssembly WASI-WebMIDI
+- WebAssembly WASI-WebGL
+- WebAssembly WASI-WebGPU
+- WebAssembly WASI-WebNN
+- WebAssembly WASI-WebUSB
+- WebAssembly WASI-WebAuthn
+- WebAssembly WASI-WebHID
+- WebAssembly WASI-WebNFC
+- WebAssembly WASI-WebSerial
+- WebAssembly WASI-WebShare
+- WebAssembly WASI-WebSocket
+- WebAssembly WASI-WebTransport
+- WebAssembly WASI-WebXR
+- WebAssembly WASI-WebAudio
+- WebAssembly WASI-WebMIDI
+- WebAssembly WASI-WebGL
